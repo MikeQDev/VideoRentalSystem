@@ -1,7 +1,5 @@
 package com.vrs;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +22,7 @@ public class PageServer {
 	
 	@RequestMapping("/videos")
 	public String videos() {
-		return "videos page - caming soom. expiration day is jan 15.";
+		return "something chaz is working on";
 	}
 
 	@RequestMapping("/loginRequest")
