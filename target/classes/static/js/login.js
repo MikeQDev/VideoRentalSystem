@@ -46,7 +46,7 @@ function ayooo(){
 
 		var resp = xmlhttp.responseText;
 		if(resp==="yes")
-			window.location.replace("/videos");
+			window.location.replace("/home");
 		else
 			alert('Login failure: '+resp);
 		

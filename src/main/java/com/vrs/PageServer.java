@@ -4,11 +4,17 @@ import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vrs.database.SQLExecutor;
+import com.vrs.security.CookieManager;
 import com.vrs.security.Hasher;
 
 @RestController
@@ -16,18 +22,51 @@ public class PageServer {
 	private final DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
 
 	@RequestMapping("/home")
-	public String stopSending() {
-		return "<b>home</b>";
+	public String generateCookie(HttpServletResponse response,
+			HttpServletRequest req) {
+
+		return videos(req);
 	}
-	
+
+	@RequestMapping("/check")
+	public String checkCookie(HttpServletRequest req) {
+		if (CookieManager.hasValidLoginCookie(req))
+			return videos(req);
+		return CookieManager.reauth();
+	}
+
+	@RequestMapping("/search")
+	public String search(HttpServletRequest req, @RequestParam String q) {
+		// // if (!CookieManager.hasValidLoginCookie(req))
+		// return CookieManager.reauth();
+		StringBuilder sB = new StringBuilder();
+		try {
+			q = q.toUpperCase();
+			ResultSet rS = SQLExecutor
+					.selectSql("SELECT * FROM MOVIE WHERE UPPER(TITLE) LIKE '%"
+							+ q + "%' OR UPPER(DESCRIPTION) LIKE '%" + q + "%'");
+			while (rS.next()) {
+				sB.append(rS.getString(2) + "...");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Issue searching DB for movie!";
+		}
+		return sB.toString();
+	}
+
 	@RequestMapping("/videos")
-	public String videos() {
+	public String videos(HttpServletRequest req) {
+		if (!CookieManager.hasValidLoginCookie(req))
+			return "Session expired. Try logging in again.";
 		return "something chaz is working on";
 	}
 
 	@RequestMapping("/loginRequest")
 	public String login(@RequestParam String email,
-			@RequestParam String password) {
+			@RequestParam String password, HttpServletResponse response,
+			HttpServletRequest req) {
 		boolean success = false;
 		try {
 			ResultSet rS = SQLExecutor
@@ -46,9 +85,13 @@ public class PageServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (success)
+		if (success) {
+			Cookie cookie = new Cookie("login", CookieManager.generateCookie());
+			cookie.setMaxAge(3600); // set logins to last one hour
+			response.addCookie(cookie);
 			return "yes";
-		return "no";
+		}
+		return "Error logging in - is the DB server running?";
 	}
 
 	@RequestMapping("/registerRequest")
@@ -116,7 +159,7 @@ public class PageServer {
 	}
 
 	@RequestMapping("/watch")
-	public String watchPage(@RequestParam String videoId) {
+	public String watchPage(@RequestParam String videoId, HttpServletRequest req) {
 		ResultSet rS = null;
 		try {
 			rS = SQLExecutor.selectSql("SELECT * FROM MOVIE WHERE MOVIEID="
@@ -144,6 +187,7 @@ public class PageServer {
 		StringBuilder sB = new StringBuilder();
 		sB.append("<HTML>\n");
 		sB.append("<head>\n");
+		sB.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/video.css\">\n");
 		sB.append("</head>\n");
 		sB.append("<body>\n");
 		// sB.append("hello world</br>\n");
