@@ -3,12 +3,13 @@ package com.vrs;
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vrs.database.SQLExecutor;
 import com.vrs.security.CookieManager;
 import com.vrs.security.Hasher;
+import com.vrs.security.Miscellaneous;
 
 @RestController
 public class PageServer {
@@ -24,14 +26,15 @@ public class PageServer {
 	@RequestMapping("/home")
 	public String generateCookie(HttpServletResponse response,
 			HttpServletRequest req) {
-
-		return videos(req);
+		if (!CookieManager.hasValidLoginCookie(req))
+			return "Session expired. Try logging in again.";
+		return browse(req);
 	}
 
 	@RequestMapping("/check")
 	public String checkCookie(HttpServletRequest req) {
 		if (CookieManager.hasValidLoginCookie(req))
-			return videos(req);
+			return browse(req);
 		return CookieManager.reauth();
 	}
 
@@ -39,25 +42,37 @@ public class PageServer {
 	public String search(HttpServletRequest req, @RequestParam String q) {
 		// // if (!CookieManager.hasValidLoginCookie(req))
 		// return CookieManager.reauth();
-		StringBuilder sB = new StringBuilder();
+		Map<String, String> resultMap = null;
 		try {
-			q = q.toUpperCase();
+			q = Miscellaneous.sanitize(q.toUpperCase());
 			ResultSet rS = SQLExecutor
 					.selectSql("SELECT * FROM MOVIE WHERE UPPER(TITLE) LIKE '%"
 							+ q + "%' OR UPPER(DESCRIPTION) LIKE '%" + q + "%'");
+			resultMap = new HashMap<String, String>();
 			while (rS.next()) {
-				sB.append(rS.getString(2) + "...");
+				resultMap.put(rS.getString(1), rS.getString(2));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Issue searching DB for movie!";
 		}
-		return sB.toString();
+		StringBuilder sB = new StringBuilder();
+		String first = "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta name=\"description\" content=\"\"> <meta name=\"author\" content=\"\"> <title>Thumbnail Gallery - Start Bootstrap Template</title> <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script> <style type=\"text/css\"> body { background: #544f4f; color: white; } .thumbnail { position: relative; float: left; background-size: cover; } .thumbnail img{ position: relative; float: left; width: 250x; height: 300px; background-size: cover; }</style> </head><body> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"#\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <!-- Page Content --> <div class=\"container\"> <div class=\"row\"> <div class=\"col-lg-12\"> <h1 class=\"page-header\">Search results for: "
+				+ q + "</h1> </div>";
+		for (String s : resultMap.keySet()) {
+			sB.append("<div class=\"col-lg-3 col-md-4 col-xs-6 thumb\"> <a class=\"thumbnail\" href=\"/watch?videoId="
+					+ s
+					+ "\"> <img src=\"content/"
+					+ s
+					+ "/cover.jpg\"> </a> </div>");
+		}
+		String last = "</div> <hr> </div> </body> </html>";
+		return first + sB.toString() + last;
 	}
 
-	@RequestMapping("/videos")
-	public String videos(HttpServletRequest req) {
+	@RequestMapping("/browse")
+	public String browse(HttpServletRequest req) {
 		if (!CookieManager.hasValidLoginCookie(req))
 			return "Session expired. Try logging in again.";
 		return "something chaz is working on";
