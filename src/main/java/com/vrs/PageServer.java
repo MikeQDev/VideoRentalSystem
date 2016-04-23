@@ -25,7 +25,7 @@ import com.vrs.security.Miscellaneous;
 @RestController
 public class PageServer {
 	private final DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
-	private boolean requireAuth = true;
+	private boolean requireAuth = false;
 
 	@RequestMapping("/home")
 	public String generateCookie(HttpServletResponse response,
@@ -66,7 +66,7 @@ public class PageServer {
 			return "Issue searching DB for movie!";
 		}
 		StringBuilder sB = new StringBuilder();
-		String first = "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta name=\"description\" content=\"\"> <meta name=\"author\" content=\"\"> <title>Thumbnail Gallery - Start Bootstrap Template</title> <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script> <style type=\"text/css\"> body { background: #544f4f; color: white; } .thumbnail { position: relative; float: left; background-size: cover; } .thumbnail img{ position: relative; float: left; width: 250x; height: 300px; background-size: cover; }</style> </head><body> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <!-- Page Content --> <div class=\"container\"> <div class=\"row\"> <div class=\"col-lg-12\"> <h1 class=\"page-header\">Search results for: "
+		String first = "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta name=\"description\" content=\"\"> <meta name=\"author\" content=\"\"> <title>Thumbnail Gallery - Start Bootstrap Template</title> <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script> <style type=\"text/css\"> body { background: #544f4f; color: white; } .thumbnail { position: relative; float: left; background-size: cover; } .thumbnail img{ position: relative; float: left; width: 250x; height: 300px; background-size: cover; }</style> </head><body> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <a href=\"genreBrowse?genre=ACTION\">Action </a><a href=\"genreBrowse?genre=COMEDY\">| Comedy |</a><a href=\"genreBrowse?genre=DRAMA\"> Drama |</a><a href=\"genreBrowse?genre=Horror\"> Horror </a> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <!-- Page Content --> <div class=\"container\"> <div class=\"row\"> <div class=\"col-lg-12\"> <h1 class=\"page-header\">Search results for: "
 				+ q + "</h1> </div>";
 		for (String s : resultMap.keySet()) {
 			sB.append("<div class=\"col-lg-3 col-md-4 col-xs-6 thumb\"> <a class=\"thumbnail\" href=\"/watch?videoId="
@@ -84,7 +84,7 @@ public class PageServer {
 		if (requireAuth)
 			if (!CookieManager.hasValidLoginCookie(req))
 				return CookieManager.reauth();
-		return " <html> <head> <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> <script type=\"text/javascript\" src=\"https://code.jquery.com/jquery-1.10.1.js\"></script> <link rel=\"stylesheet\" type=\"text/css\" href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\"> <script type=\"text/javascript\" src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script> <script src=\"js/search.js\"></script> <title></title> <script type=\"text/javascript\">//<![CDATA[ $(window).load(function(){ });//]]> </script> <style type=\"text/css\"> body { background: #544f4f; color: white; } </style> </head> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"#\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <div class=\"form-group\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> </div> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <br><br> <h2>Recently Watched</h2> <div id=\"topC\" class=\"carousel slide\"> <div class=\"carousel-inner\"> <div class=\"item active\"> <div class=\"row\"> "
+		return " <html> <head> <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> <script type=\"text/javascript\" src=\"https://code.jquery.com/jquery-1.10.1.js\"></script> <link rel=\"stylesheet\" type=\"text/css\" href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\"> <script type=\"text/javascript\" src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script> <script src=\"js/search.js\"></script> <title></title> <script type=\"text/javascript\">//<![CDATA[ $(window).load(function(){ });//]]> </script> <style type=\"text/css\"> body { background: #544f4f; color: white; } </style> </head> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"#\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <a href=\"genreBrowse?genre=ACTION\">Action </a><a href=\"genreBrowse?genre=COMEDY\">| Comedy |</a><a href=\"genreBrowse?genre=DRAMA\"> Drama |</a><a href=\"genreBrowse?genre=Horror\"> Horror </a> <div class=\"form-group\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> </div> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <br><br> <h2>Recently Watched</h2> <div id=\"topC\" class=\"carousel slide\"> <div class=\"carousel-inner\"> <div class=\"item active\"> <div class=\"row\"> "
 				+ Misc.buildBrowseRow()
 				+ " </div> </div> </div> <a class=\"left carousel-control\" href=\"#topC\" data-slide=\"prev\"><=</a> <a class=\"right carousel-control\" href=\"#topC\" data-slide=\"next\">=></a> </div> <h2>Trending</h2> <div id=\"middleC\" class=\"carousel slide\"> <div class=\"carousel-inner\"> <div class=\"item active\"> <div class=\"row\"> "
 				+ Misc.buildBrowseRow()
@@ -190,6 +190,38 @@ public class PageServer {
 		return "Issue registering account - email address may already exist";
 	}
 
+	@RequestMapping("/genreBrowse")
+	public String browseByGenre(@RequestParam String genre,
+			HttpServletRequest req) {
+		if (requireAuth)
+			if (!CookieManager.hasValidLoginCookie(req))
+				return CookieManager.reauth();
+		genre = genre.toUpperCase();
+		List<Integer> returnedList = new ArrayList<Integer>();
+		try {
+			ResultSet rS = WebSqlExecutor
+					.selectSql("SELECT MOVIEID FROM MOVIE WHERE GENRE='" + genre+"'");
+			while(rS.next()){
+				returnedList.add(rS.getInt(1));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Issue browsing movies by genre. Please try again later.";
+		}
+		StringBuilder sB = new StringBuilder();
+		String first = "<!DOCTYPE html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <meta name=\"description\" content=\"\"> <meta name=\"author\" content=\"\"> <title>Thumbnail Gallery - Start Bootstrap Template</title> <link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script> <style type=\"text/css\"> body { background: #544f4f; color: white; } .thumbnail { position: relative; float: left; background-size: cover; } .thumbnail img{ position: relative; float: left; width: 250x; height: 300px; background-size: cover; }</style> </head><body> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <a href=\"genreBrowse?genre=ACTION\">Action </a><a href=\"genreBrowse?genre=COMEDY\">| Comedy |</a><a href=\"genreBrowse?genre=DRAMA\"> Drama |</a><a href=\"genreBrowse?genre=Horror\"> Horror </a> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <!-- Page Content --> <div class=\"container\"> <div class=\"row\"> <div class=\"col-lg-12\"> <h1 class=\"page-header\">Movies of genre: "
+				+ genre + "</h1> </div>";
+		for (Integer s : returnedList) {
+			sB.append("<div class=\"col-lg-3 col-md-4 col-xs-6 thumb\"> <a class=\"thumbnail\" href=\"/watch?videoId="
+					+ s
+					+ "\"> <img src=\"content/"
+					+ s
+					+ "/cover.jpg\"> </a> </div>");
+		}
+		String last = "</div> <hr> </div> </body> </html>";
+		return first + sB.toString() + last;
+	}
+
 	@RequestMapping("/watch")
 	public String watchPage(@RequestParam String videoId, HttpServletRequest req) {
 		if (requireAuth)
@@ -223,11 +255,13 @@ public class PageServer {
 		StringBuilder sB = new StringBuilder();
 		sB.append("<HTML>\n");
 		sB.append("<head>\n");
-		sB.append("<title>Video Rental System: "+title+"</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/video.css\">\n");
+		sB.append("<title>Video Rental System: "
+				+ title
+				+ "</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/video.css\">\n");
 		sB.append("<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script>");
 		sB.append("</head>\n");
 		sB.append("<style>.navbar-default {background-color: #2F2E2E}body{color:#D8D8D8;}</style>");
-		sB.append("<body><nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div>\n");
+		sB.append("<body><nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <a href=\"genreBrowse?genre=ACTION\">Action </a><a href=\"genreBrowse?genre=COMEDY\">| Comedy |</a><a href=\"genreBrowse?genre=DRAMA\"> Drama |</a><a href=\"genreBrowse?genre=Horror\"> Horror </a> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div>\n");
 		// sB.append("hello world</br>\n");
 		sB.append("<video id=\"video\" controls\n");
 		sB.append("preload=\"auto\" width=\"1280\" height=\"720\" poster=\"content/"
