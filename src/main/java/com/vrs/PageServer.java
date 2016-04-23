@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vrs.database.SQLExecutor;
+import com.vrs.admintool.VideoManager;
+import com.vrs.database.WebSqlExecutor;
 import com.vrs.security.CookieManager;
 import com.vrs.security.Hasher;
 import com.vrs.security.Miscellaneous;
@@ -48,7 +49,7 @@ public class PageServer {
 		Map<String, String> resultMap = null;
 		try {
 			q = Miscellaneous.sanitize(q.toUpperCase());
-			ResultSet rS = SQLExecutor
+			ResultSet rS = WebSqlExecutor
 					.selectSql("SELECT * FROM MOVIE WHERE UPPER(TITLE) LIKE '%"
 							+ q + "%' OR UPPER(DESCRIPTION) LIKE '%" + q + "%'");
 			resultMap = new HashMap<String, String>();
@@ -87,7 +88,7 @@ public class PageServer {
 			HttpServletRequest req) {
 		boolean success = false;
 		try {
-			ResultSet rS = SQLExecutor
+			ResultSet rS = WebSqlExecutor
 					.selectSql("SELECT PASSWORD FROM VRS_USER_T WHERE EMAIL='"
 							+ email.toUpperCase() + "'");
 			String hashedPass = "";
@@ -141,7 +142,7 @@ public class PageServer {
 		email = email.toUpperCase().trim();
 		boolean success = false;
 		try {
-			success = SQLExecutor
+			success = WebSqlExecutor
 					.insertSql("INSERT INTO VRS_USER_T (eMail, FirstName, LastName, Phone, Password, Street, City, State, Zip, CCNum, CCSecNum, PlanType) VALUES("
 							+ "'"
 							+ email
@@ -180,7 +181,7 @@ public class PageServer {
 	public String watchPage(@RequestParam String videoId, HttpServletRequest req) {
 		ResultSet rS = null;
 		try {
-			rS = SQLExecutor.selectSql("SELECT * FROM MOVIE WHERE MOVIEID="
+			rS = WebSqlExecutor.selectSql("SELECT * FROM MOVIE WHERE MOVIEID="
 					+ videoId);
 		} catch (Exception e) {
 			e.printStackTrace();

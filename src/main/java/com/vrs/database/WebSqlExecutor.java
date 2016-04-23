@@ -9,7 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class SQLExecutor {
+public class WebSqlExecutor {
 	private static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(
 				"jdbc:oracle:thin:@localhost:1521:orcl342", "mike", "fuckyou");

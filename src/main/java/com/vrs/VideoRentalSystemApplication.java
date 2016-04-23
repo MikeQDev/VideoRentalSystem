@@ -3,7 +3,7 @@ package com.vrs;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.vrs.database.SQLExecutor;
+import com.vrs.database.WebSqlExecutor;
 
 @SpringBootApplication
 public class VideoRentalSystemApplication {
