@@ -25,6 +25,7 @@ import com.vrs.security.Miscellaneous;
 @RestController
 public class PageServer {
 	private final DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
+	private boolean requireAuth = true;
 
 	@RequestMapping("/home")
 	public String generateCookie(HttpServletResponse response,
@@ -34,16 +35,18 @@ public class PageServer {
 
 	@RequestMapping("/check")
 	public String checkCookie(HttpServletRequest req) {
-		if (CookieManager.hasValidLoginCookie(req))
-			return browse(req);
+		if (requireAuth)
+			if (CookieManager.hasValidLoginCookie(req))
+				return browse(req);
 		return CookieManager.reauth();
 	}
 
 	@RequestMapping("/search")
 	public String search(HttpServletRequest req,
 			@RequestParam(required = false) String q) {
-		if (!CookieManager.hasValidLoginCookie(req))
-			return CookieManager.reauth();
+		if (requireAuth)
+			if (!CookieManager.hasValidLoginCookie(req))
+				return CookieManager.reauth();
 		if (q == null)
 			return browse(req);
 		Map<String, String> resultMap = null;
@@ -51,7 +54,8 @@ public class PageServer {
 			q = Miscellaneous.sanitize(q.toUpperCase());
 			ResultSet rS = WebSqlExecutor
 					.selectSql("SELECT * FROM MOVIE WHERE UPPER(TITLE) LIKE '%"
-							+ q + "%' OR UPPER(DESCRIPTION) LIKE '%" + q + "%'");
+							+ q + "%' OR UPPER(DESCRIPTION) LIKE '%" + q + "%'"
+							+ " OR UPPER(GENRE) LIKE '%" + q + "%'");
 			resultMap = new HashMap<String, String>();
 			while (rS.next()) {
 				resultMap.put(rS.getString(1), rS.getString(2));
@@ -77,8 +81,9 @@ public class PageServer {
 
 	@RequestMapping("/browse")
 	public String browse(HttpServletRequest req) {
-		if (!CookieManager.hasValidLoginCookie(req))
-			return CookieManager.reauth();
+		if (requireAuth)
+			if (!CookieManager.hasValidLoginCookie(req))
+				return CookieManager.reauth();
 		return " <html> <head> <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\"> <script type=\"text/javascript\" src=\"https://code.jquery.com/jquery-1.10.1.js\"></script> <link rel=\"stylesheet\" type=\"text/css\" href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\"> <script type=\"text/javascript\" src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script> <script src=\"js/search.js\"></script> <title></title> <script type=\"text/javascript\">//<![CDATA[ $(window).load(function(){ });//]]> </script> <style type=\"text/css\"> body { background: #544f4f; color: white; } </style> </head> <nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"#\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <div class=\"form-group\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> </div> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div> </nav> <br><br> <h2>Recently Watched</h2> <div id=\"topC\" class=\"carousel slide\"> <div class=\"carousel-inner\"> <div class=\"item active\"> <div class=\"row\"> "
 				+ Misc.buildBrowseRow()
 				+ " </div> </div> </div> <a class=\"left carousel-control\" href=\"#topC\" data-slide=\"prev\"><=</a> <a class=\"right carousel-control\" href=\"#topC\" data-slide=\"next\">=></a> </div> <h2>Trending</h2> <div id=\"middleC\" class=\"carousel slide\"> <div class=\"carousel-inner\"> <div class=\"item active\"> <div class=\"row\"> "
@@ -187,8 +192,9 @@ public class PageServer {
 
 	@RequestMapping("/watch")
 	public String watchPage(@RequestParam String videoId, HttpServletRequest req) {
-		if (!CookieManager.hasValidLoginCookie(req))
-			return CookieManager.reauth();
+		if (requireAuth)
+			if (!CookieManager.hasValidLoginCookie(req))
+				return CookieManager.reauth();
 		ResultSet rS = null;
 		try {
 			rS = WebSqlExecutor.selectSql("SELECT * FROM MOVIE WHERE MOVIEID="
@@ -198,7 +204,7 @@ public class PageServer {
 		}
 		if (rS == null)
 			return "Error grabbing information from DB";
-		String title, description, dateReleased, viewCount, ageRating, userRating;
+		String title, description, dateReleased, viewCount, ageRating, userRating, genre;
 		try {
 			rS.next();
 			title = rS.getString(2);
@@ -207,6 +213,7 @@ public class PageServer {
 			viewCount = rS.getInt(5) + "";
 			ageRating = rS.getString(6);
 			userRating = rS.getDouble(7) + "";
+			genre = rS.getString(8);
 		} catch (Exception x) {
 			x.printStackTrace();
 			return "Error pulling information from DB. Make sure DB is configured correctly and valid video ID was provided.</br></br><br>Detailed info:<br>"
@@ -216,9 +223,11 @@ public class PageServer {
 		StringBuilder sB = new StringBuilder();
 		sB.append("<HTML>\n");
 		sB.append("<head>\n");
-		sB.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"css/video.css\">\n");
+		sB.append("<title>Video Rental System: "+title+"</title><link rel=\"stylesheet\" type=\"text/css\" href=\"css/video.css\">\n");
+		sB.append("<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" rel=\"stylesheet\"> <script src=\"js/search.js\"></script>");
 		sB.append("</head>\n");
-		sB.append("<body>\n");
+		sB.append("<style>.navbar-default {background-color: #2F2E2E}body{color:#D8D8D8;}</style>");
+		sB.append("<body><nav class=\"navbar navbar-default\"> <div class=\"container-fluid\"> <a class=\"navbar-brand\" href=\"/browse\"> <img alt=\"Video Rental System\" src=\"index.png\"> </a> <div class=\"navbar-form navbar-right\"> <input id=\"searchBar\" type=\"text\" class=\"form-control\" placeholder=\"Search\"> <button class=\"btn btn-default\" onClick=\"hi()\">Search</button> </div> </div>\n");
 		// sB.append("hello world</br>\n");
 		sB.append("<video id=\"video\" controls\n");
 		sB.append("preload=\"auto\" width=\"1280\" height=\"720\" poster=\"content/"
@@ -233,19 +242,9 @@ public class PageServer {
 				+ "</p><p id=\"movieRating\">View count: " + viewCount
 				+ "</p>\n");
 		sB.append("<p id=\"movieRelease\">Release date: " + dateReleased
-				+ "</p><p id=\"ageRating\">Age rating: " + ageRating + "</p>\n");
-		// sB.append("<button onclick=\"myFunc()\">update</button>\n");
-		sB.append("<script>\n");
-		// sB.append("function myFunc(){\n");
-		// sB.append("var s = \n");
-		// sB.append("var video = document.getElementById(\"video\");\n");
-		// sB.append("var src = document.createElement(\"source\");\n");
-		// sB.append("src.setAttribute(\"src\",s[7].split(\".\")[0]+\".mp4\");\n");
-		// sB.append("video.appendChild(src);\n");
-		// sB.append("alert(s[7].split(\".\")[0]);\n");
-		// sB.append("alert(window.location.href.split('=')[1]);\n");
-		// sB.append("}\n");
-		sB.append("</script>\n");
+				+ "</p><p id=\"ageRating\">Age rating: " + ageRating
+				+ "</p>\n<p>Genre: " + genre + "</p>");
+
 		sB.append("</body>\n");
 		sB.append("</HTML>\n");
 		WebSqlExecutor.updateViews(Integer.parseInt(videoId));
