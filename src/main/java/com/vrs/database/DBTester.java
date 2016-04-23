@@ -10,7 +10,7 @@ public class DBTester {
 
 	private static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(
-				"jdbc:oracle:thin:@localhost:1521:orcl342", "mike", "fuckyou");
+				"jdbc:oracle:thin:@localhost:1521:orcl342", "mike", "xyz");
 	}
 
 	public static void main(String[] args) throws SQLException {

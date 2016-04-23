@@ -26,6 +26,19 @@ public class WebSqlExecutor {
 		}
 		// System.out.println(updateSql("CREATE TABLE HI(ID NUMBER(5,2), NAME VARCHAR2(255))"));
 	}*/
+	
+	public static boolean updateViews(int vidId){
+		try {
+			ResultSet rS = selectSql("SELECT * FROM MOVIE WHERE MOVIEID="+vidId);
+			rS.next();
+			int curViews = rS.getInt(5);
+			updateSql("UPDATE MOVIE SET VIEWCOUNT="+(++curViews)+" WHERE MOVIEID="+vidId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 	public static boolean updateSql(String updateString) throws Exception {
 		boolean success = false;

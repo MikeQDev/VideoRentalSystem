@@ -51,20 +51,20 @@ public class VideoManager extends JFrame {
 		buttonSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Changes saved!");
+				JOptionPane.showMessageDialog(null, "Unimplemented feature due to time constraints");
 			}
 		});
 
-		buttonLookup = new JButton("Lookup");
+		/*buttonLookup = new JButton("Lookup");
 		buttonLookup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame f = new JFrame("User lookup");
 
 			}
-		});
+		});*/
 		bottomP.add(buttonSave);
-		bottomP.add(buttonLookup);
+		//bottomP.add(buttonLookup);
 
 		add(bottomP, BorderLayout.SOUTH);
 	}
