@@ -15,7 +15,9 @@ import javax.swing.JTextField;
 import com.vrs.database.WebSqlExecutor;
 
 public class UserLookup extends JFrame {
-
+	/**
+	 * GUI for looking up users
+	 */
 	public UserLookup() {
 		setTitle("User Lookup");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

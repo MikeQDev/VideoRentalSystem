@@ -26,7 +26,10 @@ public class VideoManager extends JFrame {
 			textfieldRelease, textfieldViewCount, textfieldAgeRating, textfieldUserRating,
 			textfieldCategory;
 	JButton buttonSave, buttonLookup;
-
+	/**
+	 * GUI for managing videos
+	 * @param userId
+	 */
 	public VideoManager(String videoId) {
 		setTitle("VRS Video Manager");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -7,7 +7,11 @@ import com.vrs.database.WebSqlExecutor;
 
 @SpringBootApplication
 public class VideoRentalSystemApplication {
-
+	
+	/**
+	 * Entry point
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(VideoRentalSystemApplication.class, args);
 		

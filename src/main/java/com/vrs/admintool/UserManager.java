@@ -29,6 +29,10 @@ public class UserManager extends JFrame {
 			textfieldPlanType;
 	JButton buttonSave, buttonLookup;
 
+	/**
+	 * GUI for managing users
+	 * @param userId
+	 */
 	public UserManager(String userId) {
 		setTitle("VRS User Manager");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);

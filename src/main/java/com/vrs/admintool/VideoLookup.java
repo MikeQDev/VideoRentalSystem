@@ -15,7 +15,9 @@ import javax.swing.JTextField;
 import com.vrs.database.WebSqlExecutor;
 
 public class VideoLookup extends JFrame {
-
+	/**
+	 * GUI for looking up videos
+	 */
 	public VideoLookup() {
 		setTitle("Video Lookup");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

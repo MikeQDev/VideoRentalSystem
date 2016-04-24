@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 public class Misc {
+	/**
+	 * 
+	 * @return HTML code for a a carosel containing videos
+	 */
 	public static String buildBrowseRow() {
 		Random r = new Random();
 		List<Integer> curList = new ArrayList<Integer>();

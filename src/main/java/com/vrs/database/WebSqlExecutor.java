@@ -10,23 +10,21 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class WebSqlExecutor {
+	/**
+	 * 
+	 * @return connection to Oracle 11g database
+	 * @throws SQLException
+	 */
 	private static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(
-				"jdbc:oracle:thin:@localhost:1521:orcl342", "mike", "fuckyou");
+				"jdbc:oracle:thin:@localhost:1521:orcl342", "mike", "redacted");
 	}
 
-	/*public static void main(String[] args) throws SQLException {
-		ResultSet heh = selectSql("SELECT * FROM MOVIE");
-		int a = heh.getMetaData().getColumnCount();
-		System.out.println(a);
-		
-		
-		while (heh.next()) {
-				System.out.println(":"+targetFormat.format(heh.getDate(4)));
-		}
-		// System.out.println(updateSql("CREATE TABLE HI(ID NUMBER(5,2), NAME VARCHAR2(255))"));
-	}*/
-	
+	/**
+	 * Increase video views
+	 * @param vidId
+	 * @return true if video views successfully updated, otherwise false
+	 */
 	public static boolean updateViews(int vidId){
 		try {
 			ResultSet rS = selectSql("SELECT * FROM MOVIE WHERE MOVIEID="+vidId);
@@ -40,6 +38,12 @@ public class WebSqlExecutor {
 		return true;
 	}
 
+	/**
+	 * SQL update statement
+	 * @param updateString
+	 * @return
+	 * @throws Exception
+	 */
 	public static boolean updateSql(String updateString) throws Exception {
 		boolean success = false;
 		Connection conn = null;
@@ -55,6 +59,12 @@ public class WebSqlExecutor {
 		return success;
 	}
 
+	/**
+	 * SQL insert statement
+	 * @param insertString
+	 * @return
+	 * @throws Exception
+	 */
 	public static boolean insertSql(String insertString) throws Exception {
 		Connection conn = null;
 		boolean success = false;
@@ -70,6 +80,12 @@ public class WebSqlExecutor {
 		return success;
 	}
 
+	/**
+	 * SQL select statement
+	 * @param queryString
+	 * @return
+	 * @throws Exception
+	 */
 	public static ResultSet selectSql(String queryString) throws Exception {
 		Connection conn = null;
 		Statement stmt = null;

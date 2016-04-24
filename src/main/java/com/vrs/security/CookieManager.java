@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 public class CookieManager {
 	private static List<String> cookies = new ArrayList<String>(0);
 
+	/**
+	 * Check if cookies are valid
+	 * @param req
+	 * @return true if cookies are valid, false if cookkies are not valid
+	 */
 	public static boolean hasValidLoginCookie(HttpServletRequest req) {
 		if (req.getCookies() == null)
 			return false;
@@ -21,33 +26,25 @@ public class CookieManager {
 			return true;
 		return false;
 	}
-
+	
+	/**
+	 *
+	 * @return Cookie of a randomly-generated value
+	 */
 	public static String generateCookie() {
 		String cookieValue = new BigInteger(130, new SecureRandom())
 				.toString(32);
 		cookies.add(cookieValue);
 		return cookieValue;
 	}
-
+	
+	/**
+	 * 
+	 * @return HTML->JS code for redirecting user to login page
+	 */
 	public static String reauth() {
 		return "<script>alert('Invalid session! Try logging in again.');window.location.href=\"/login.html\";</script>";
 	}
-
-	/*
-		public static boolean isValidCookie(HttpServletRequest req) {
-			List<Cookie> cookies = new ArrayList<Cookie>(Arrays.asList(req
-					.getCookies()));
-			for (Cookie c : cookies) {
-				if (c.getName().equals("authentication")) {
-					if (c.getValue() == "a")
-						return true;
-					else
-						return false;
-				}
-			}
-			return false;
-		}
-	*/
 	private CookieManager() {
 
 	}

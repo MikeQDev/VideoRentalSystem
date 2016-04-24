@@ -26,13 +26,24 @@ import com.vrs.security.Miscellaneous;
 public class PageServer {
 	private final DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy");
 	private boolean requireAuth = false;
-
+	
+	/**
+	 * Landing for loggings; redirects to /browse
+	 * @param response
+	 * @param req
+	 * @return
+	 */
 	@RequestMapping("/home")
 	public String generateCookie(HttpServletResponse response,
 			HttpServletRequest req) {
 		return browse(req);
 	}
-
+	
+	/**
+	 * Check the request for valid cookies
+	 * @param req
+	 * @return
+	 */
 	@RequestMapping("/check")
 	public String checkCookie(HttpServletRequest req) {
 		if (requireAuth)
@@ -41,6 +52,12 @@ public class PageServer {
 		return CookieManager.reauth();
 	}
 
+	/**
+	 * Search for a movie
+	 * @param req
+	 * @param q query to search for
+	 * @return HTML layout of search results
+	 */
 	@RequestMapping("/search")
 	public String search(HttpServletRequest req,
 			@RequestParam(required = false) String q) {
@@ -78,7 +95,12 @@ public class PageServer {
 		String last = "</div> <hr> </div> </body> </html>";
 		return first + sB.toString() + last;
 	}
-
+	
+	/**
+	 * Display videos in carousels
+	 * @param req
+	 * @return HTML code for browsing videos
+	 */
 	@RequestMapping("/browse")
 	public String browse(HttpServletRequest req) {
 		if (requireAuth)
@@ -95,6 +117,14 @@ public class PageServer {
 				+ " </div> </div> </div> <a class=\"left carousel-control\" href=\"#lastC\" data-slide=\"prev\"><=</a> <a class=\"right carousel-control\" href=\"#lastC\" data-slide=\"next\">=></a> </div> </body> </html> ";
 	}
 
+	/**
+	 * Try to login
+	 * @param email
+	 * @param password
+	 * @param response
+	 * @param req
+	 * @return Response to login request
+	 */
 	@RequestMapping("/loginRequest")
 	public String login(@RequestParam String email,
 			@RequestParam String password, HttpServletResponse response,
@@ -126,6 +156,22 @@ public class PageServer {
 		return "Error logging in - is the DB server running?";
 	}
 
+	/**
+	 * Try to register a user
+	 * @param email
+	 * @param password
+	 * @param fName
+	 * @param lName
+	 * @param phone
+	 * @param streetAddr
+	 * @param city
+	 * @param state
+	 * @param zip
+	 * @param ccn
+	 * @param ccsn
+	 * @param planType
+	 * @return Response to registration request
+	 */
 	@RequestMapping("/registerRequest")
 	public String register(@RequestParam String email,
 			@RequestParam String password, @RequestParam String fName,
@@ -189,7 +235,13 @@ public class PageServer {
 			return "yes";
 		return "Issue registering account - email address may already exist";
 	}
-
+	
+	/**
+	 * Browse movies by genre
+	 * @param genre
+	 * @param req
+	 * @return HTML code of results by genre
+	 */
 	@RequestMapping("/genreBrowse")
 	public String browseByGenre(@RequestParam String genre,
 			HttpServletRequest req) {
@@ -222,6 +274,12 @@ public class PageServer {
 		return first + sB.toString() + last;
 	}
 
+	/**
+	 * Watch a movie
+	 * @param videoId
+	 * @param req
+	 * @return HTML code for streaming a movie
+	 */
 	@RequestMapping("/watch")
 	public String watchPage(@RequestParam String videoId, HttpServletRequest req) {
 		if (requireAuth)
