@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Flat HTML5/CSS3 Login Form</title>
+        <link rel="stylesheet" href="css/login.css">
+  </head>
+
+  <body>
+  
+<!-- Navigation -->
+	<nav class="navbar navbar-fixed-top topnav"
+		role="navigation">
+		<div class="col-sm-3">
+        <a href="/index.html">
+			<img src="img/vrs-logo-color-small.png" class="img-responsive"
+				style="padding-top: 5px">
+ 		<!--        ALTERNATE LOGO       
+ 			<img src="img/vrs-logo-with-text.png" class="img-responsive"
+				style="padding-top: 5px">
+                -->
+               </a> 
+		</div>
+	</nav>
+    <div class="login-page">
+  <div class="form">
+    <form class="register-form">
+      <input type="text" placeholder="email address"/>
+      <input type="password" placeholder="password"/>
+      <input type="text" placeholder="first name"/>
+      <input type="text" placeholder="last name"/>
+      <input type="text" placeholder="phone"/>
+      <input type="text" placeholder="street address"/>
+      <input type="text" placeholder="city"/>
+      <input type="text" placeholder="state"/>
+      <input type="text" placeholder="ZIP"/>
+      <input type="text" placeholder="credit card #"/>
+      <input type="text" placeholder="credit card security #"/>
+      <input type="text" placeholder="plan type (A,B,C)"/>
+      <button onclick="createAccount()">create</button>
+      <p class="message">Already registered? <a href="#">Sign In</a></p>
+    </form>
+    <form class="login-form">
+      <input type="text" placeholder="email address"/>
+      <input type="password" placeholder="password"/>
+      <button onClick=login()>login</button>
+      <p class="message">Not registered? <a href="#">Create an account</a></p>
+    </form>
+  </div>
+</div>
+    
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+	<script src="js/login.js"></script>    
+
+  </body>
+</html>
